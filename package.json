@@ -1,0 +1,14 @@
+{
+  "name": "ci-onboarding-ai-test",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tiny Node app for CI onboarding AI persist testing.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
