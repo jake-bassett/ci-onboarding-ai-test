@@ -1,0 +1,40 @@
+pipeline:
+  name: pipeline_ci_onboarding_ai_test_build_8deb
+  stages:
+    - id: build_test
+      name: Build and Test
+      runtime: cloud
+      platform:
+        os: linux
+        arch: amd64
+      clone:
+        enabled: true
+      cache:
+        enabled: true
+      steps:
+        - id: test
+          name: Test
+          run:
+            container:
+              image: node:22-bookworm
+            shell: bash
+            script: |-
+              node --version
+              mkdir -p .harness/reports .harness/coverage
+              node --test --experimental-test-coverage \
+                --test-reporter=junit --test-reporter-destination=.harness/reports/junit.xml \
+                --test-reporter=lcov --test-reporter-destination=.harness/coverage/lcov.info
+            report:
+              type: junit
+              paths:
+                - .harness/reports/junit.xml
+        - id: upload_coverage
+          name: Upload Coverage
+          run:
+            shell: bash
+            script: |-
+              test -s .harness/coverage/lcov.info
+              hcli cov upload --file=.harness/coverage/lcov.info
+  identifier: pipeline_ci_onboarding_ai_test_build_8deb
+  tags:
+    onboarding: "true"
