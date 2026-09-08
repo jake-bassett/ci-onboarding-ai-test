@@ -1,0 +1,37 @@
+pipeline:
+  id: pipeline_ci_onboarding_ai_test_build_1e6b
+  name: pipeline_ci_onboarding_ai_test_build_1e6b
+  stages:
+    - id: build_and_test
+      name: Build and Test
+      runtime: cloud
+      cache:
+        enabled: true
+      clone:
+        enabled: true
+      steps:
+        - id: install_dependencies
+          name: Install Dependencies
+          run:
+            container:
+              image: node:20-bookworm
+            shell: sh
+            script: |-
+              node --version
+              npm --version
+              npm install
+        - id: run_tests
+          name: Run Tests
+          run:
+            container:
+              image: node:20-bookworm
+            shell: sh
+            script: |-
+              mkdir -p .harness/reports
+              node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=.harness/reports/junit.xml
+            report:
+              type: junit
+              paths:
+                - .harness/reports/junit.xml
+  tags:
+    onboarding: "true"
