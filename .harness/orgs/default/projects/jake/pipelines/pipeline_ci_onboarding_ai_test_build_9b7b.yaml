@@ -1,0 +1,28 @@
+pipeline:
+  id: pipeline_ci_onboarding_ai_test_build_9b7b
+  name: pipeline_ci_onboarding_ai_test_build_9b7b
+  stages:
+    - id: build_test
+      name: Build and Test
+      runtime: cloud
+      clone:
+        enabled: true
+      cache:
+        enabled: true
+      steps:
+        - id: run_tests
+          name: Run Tests
+          run:
+            container:
+              image: node:22
+            shell: sh
+            script: |-
+              node --version
+              mkdir -p .harness/reports
+              node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=.harness/reports/junit.xml
+            report:
+              type: junit
+              paths:
+                - .harness/reports/junit.xml
+  tags:
+    onboarding: "true"
