@@ -1,0 +1,37 @@
+pipeline:
+  name: pipeline_ci_onboarding_ai_test_build_03bc
+  id: pipeline_ci_onboarding_ai_test_build_03bc
+  stages:
+    - name: build-and-test
+      id: build_and_test
+      runtime: cloud
+      clone:
+        enabled: true
+      cache:
+        enabled: true
+      steps:
+        - name: Install Dependencies
+          id: install_dependencies
+          run:
+            container:
+              image: node:22-alpine
+            shell: sh
+            script: |-
+              node --version
+              npm install
+        - name: Test
+          id: test
+          run:
+            container:
+              image: node:22-alpine
+            shell: sh
+            script: |-
+              node --version
+              mkdir -p .harness/reports
+              node --test --test-reporter=junit --test-reporter-destination=.harness/reports/junit.xml
+            report:
+              type: junit
+              paths:
+                - .harness/reports/junit.xml
+  tags:
+    onboarding: "true"
